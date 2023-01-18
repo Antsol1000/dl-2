@@ -185,3 +185,11 @@ def save_model(model, prefix):
     model_path = f'models/{prefix}-{date.today()}'
     model.save(model_path)
     return model_path
+
+
+def convert_predictions(y_predictions, y_true, labels_ohe):
+    return np.asarray(tf.argmax(y_predictions.T)), labels_ohe.inverse_transform(y_true).reshape((1, -1))[0]
+
+
+def get_labels_from_predictions(y_test_predictions, y_test_true, labels_enc):
+    return labels_enc.inverse_transform([i for i in y_test_predictions]), labels_enc.inverse_transform([i for i in y_test_true]),
