@@ -108,7 +108,7 @@ def count_samples_in_class(dataset, labels_enc, labels_ohe):
     print(d)
 
 
-def get_model():
+def get_model(number_of_classes):
     model = tf.keras.Sequential([
         tf.keras.layers.InputLayer(input_shape=(200, 300, 3)),
 
@@ -129,7 +129,7 @@ def get_model():
         tf.keras.layers.Dense(32, activation="relu"),
         tf.keras.layers.Dropout(0.5),
 
-        tf.keras.layers.Dense(15, activation="softmax")
+        tf.keras.layers.Dense(number_of_classes, activation="softmax")
     ])
     model.compile(optimizer='Adam', loss=tf.keras.losses.CategoricalCrossentropy(), metrics=['accuracy'])
     return model
@@ -187,9 +187,9 @@ def save_model(model, prefix):
     return model_path
 
 
-def convert_predictions(y_predictions, y_true, labels_ohe):
-    return np.asarray(tf.argmax(y_predictions.T)), labels_ohe.inverse_transform(y_true).reshape((1, -1))[0]
+def convert_predictions(y_predictions):
+    return np.asarray(tf.argmax(y_predictions.T))
 
 
-def get_labels_from_predictions(y_test_predictions, y_test_true, labels_enc):
-    return labels_enc.inverse_transform([i for i in y_test_predictions]), labels_enc.inverse_transform([i for i in y_test_true]),
+def get_labels(y, labels_enc):
+    return labels_enc.inverse_transform([i for i in y])
