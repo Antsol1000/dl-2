@@ -105,7 +105,7 @@ def count_samples_in_class(dataset, labels_enc, labels_ohe):
             d[i] = 1
         else:
             d[i] += 1
-    print(d)
+    return d
 
 
 def get_model(number_of_classes):
@@ -135,9 +135,13 @@ def get_model(number_of_classes):
     return model
 
 
-def train_model(model, X_train, y_train, X_val, y_val, epochs, batch_size, patience=5):
+def train_model(model, X_train, y_train, X_val, y_val, epochs, batch_size, patience=5, class_weight=None):
     early_stopping = tf.keras.callbacks.EarlyStopping(
         monitor="val_accuracy", patience=patience, restore_best_weights=True)
+
+    if class_weight:
+        return model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size,
+                         validation_data=(X_val, y_val), callbacks=[early_stopping], class_weight=class_weight)
 
     return model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size,
                      validation_data=(X_val, y_val), callbacks=[early_stopping])
